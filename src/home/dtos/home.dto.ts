@@ -15,7 +15,10 @@ export class HomeResponseDto {
 
   @Expose({ name: 'listedDate'})
   listed_date: Date;
+
   price: number;
+
+  image: string;
 
   @Expose({ name: 'landSize'})
   land_size: number;
