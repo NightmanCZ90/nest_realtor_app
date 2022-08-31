@@ -152,4 +152,16 @@ export class HomeService {
       throw new NotFoundException();
     }
   }
+
+  async deleteHomeById(id: number) {
+    try {
+      await this.prismaService.home.delete({
+        where: { id },
+        
+      });
+      return true;
+    } catch(err) {
+      throw new NotFoundException();
+    }
+  }
 }
