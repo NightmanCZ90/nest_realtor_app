@@ -1,13 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PropertyType } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { HomeResponseDto } from './dtos/home.dto';
+
+interface GetHomesParam {
+  city?: string;
+  price?: {
+    gte?: number;
+    lte?: number;
+  };
+  propertyType?: PropertyType;
+}
 
 @Injectable()
 export class HomeService {
 
   constructor(private readonly prismaService: PrismaService) { }
 
-  async getHomes(): Promise<HomeResponseDto[]> {
+  async getHomes(filters: GetHomesParam): Promise<HomeResponseDto[]> {
     const homes = await this.prismaService.home.findMany({
       select: {
         id: true,
@@ -23,11 +33,16 @@ export class HomeService {
           },
           take: 1,
         }
-      }
+      },
+      where: filters,      
     });
 
+    if (homes.length === 0) {
+      throw new NotFoundException();
+    }
+
     return homes.map(home => {
-      const fetchedHome = { ...home, image: home.images[0].url };
+      const fetchedHome = { ...home, image: home.images[0]?.url };
       delete fetchedHome.images;
       return new HomeResponseDto(fetchedHome);
     });
