@@ -27,6 +27,16 @@ interface CreateHomeParams {
   images: Image[];
 }
 
+interface UpdateHomeParams {
+  address: string;
+  numberOfBedrooms: number;
+  numberOfBathrooms: number;
+  city: string;
+  price: number;
+  landSize: number;
+  propertyType: PropertyType;
+}
+
 const homeSelect = {
   id: true,
   address: true,
@@ -121,5 +131,25 @@ export class HomeService {
     });
 
     return new HomeResponseDto(home);
+  }
+
+  async updateHomeById(id: number, data: Partial<UpdateHomeParams>) {
+    try {
+      const updatedHome = await this.prismaService.home.update({
+        where: { id },
+        data: {
+          address: data.address,
+          city: data.city,
+          land_size: data.landSize,
+          number_of_bathrooms: data.numberOfBathrooms,
+          number_of_bedrooms: data.numberOfBedrooms,
+          price: data.price,
+          property_type: data.propertyType,
+        }
+      });
+      return new HomeResponseDto(updatedHome);
+    } catch(err) {
+      throw new NotFoundException();
+    }
   }
 }
