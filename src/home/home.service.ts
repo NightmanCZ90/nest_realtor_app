@@ -12,6 +12,21 @@ interface GetHomesParam {
   propertyType?: PropertyType;
 }
 
+interface Image {
+  url: string
+}
+
+interface CreateHomeParams {
+  address: string;
+  numberOfBedrooms: number;
+  numberOfBathrooms: number;
+  city: string;
+  price: number;
+  landSize: number;
+  propertyType: PropertyType;
+  images: Image[];
+}
+
 const homeSelect = {
   id: true,
   address: true,
@@ -75,6 +90,35 @@ export class HomeService {
     if (!home) {
       throw new NotFoundException();
     }
+
+    return new HomeResponseDto(home);
+  }
+
+  async createHome({
+    address,
+    city,
+    images,
+    landSize,
+    numberOfBathrooms,
+    numberOfBedrooms,
+    price,
+    propertyType,
+  }: CreateHomeParams) {
+    const home = await this.prismaService.home.create({
+      data: {
+        address,
+        city,
+        land_size: landSize,
+        number_of_bathrooms: numberOfBathrooms,
+        number_of_bedrooms: numberOfBedrooms,
+        price,
+        property_type: propertyType,
+        realtor_id: 1,
+        images: {
+          create: images
+        }
+      },
+    });
 
     return new HomeResponseDto(home);
   }
