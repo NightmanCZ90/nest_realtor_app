@@ -1,5 +1,10 @@
 import { PropertyType } from '@prisma/client';
-import { Exclude, Expose, Transform } from 'class-transformer';
+
+export class Realtor {
+  name: string;
+  email: string;
+  phone: string;
+}
 
 export class HomeResponseDto {
   id: number;
@@ -34,6 +39,9 @@ export class HomeResponseDto {
 
   @Exclude()
   realtor_id: number;
+
+  @Expose()
+  realtor: Realtor;
 
   constructor(partial: Partial<HomeResponseDto>) {
     Object.assign(this, partial);
