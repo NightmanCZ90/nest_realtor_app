@@ -34,7 +34,7 @@ export class HomeService {
           take: 1,
         }
       },
-      where: filters,      
+      where: filters,
     });
 
     if (homes.length === 0) {
@@ -46,5 +46,17 @@ export class HomeService {
       delete fetchedHome.images;
       return new HomeResponseDto(fetchedHome);
     });
+  }
+
+  async getHomeById(id: number): Promise<HomeResponseDto> {
+    const home = await this.prismaService.home.findUnique({
+      where: { id }
+    });
+
+    if (!home) {
+      throw new NotFoundException();
+    }
+
+    return new HomeResponseDto(home);
   }
 }
