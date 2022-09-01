@@ -164,4 +164,17 @@ export class HomeService {
       throw new NotFoundException();
     }
   }
+
+  async getRealtorByHomeId(id: number) {
+    const home = await this.prismaService.home.findUnique({
+      where: { id },
+      include: { realtor: true }
+    });
+
+    if (!home || !home.realtor) {
+      throw new NotFoundException();
+    }
+
+    return home.realtor;
+  }
 }
