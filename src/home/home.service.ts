@@ -38,7 +38,7 @@ interface UpdateHomeParams {
   propertyType: PropertyType;
 }
 
-const homeSelect = {
+export const homeSelect = {
   id: true,
   address: true,
   city: true,
@@ -72,7 +72,7 @@ export class HomeService {
     }
 
     return homes.map(home => {
-      const fetchedHome = { ...home, image: home.images[0]?.url };
+      const fetchedHome = { ...home, image: home.images?.[0]?.url };
       delete fetchedHome.images;
       return new HomeResponseDto(fetchedHome);
     });
